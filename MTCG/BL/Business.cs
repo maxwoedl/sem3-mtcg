@@ -1,14 +1,22 @@
 using System;
+using System.Threading.Tasks;
+using MTCG.DAL;
 using MTCG.Http;
 
 namespace MTCG.BL
 {
     public class Business
     {
-        [HttpEndpoint("/", HttpMethod.Get)]
-        public void HandleGetRequest(HttpRequest req)
+        [HttpEndpoint("/users/", HttpMethod.Post)]
+        public async Task LogUser(HttpRequest req)
         {
-            Console.WriteLine($"GET Handler:\n{req}");
+            var ctx = new DatabaseContext();
+            await ctx.InitAsync();
+            
+            var userRepository = new UserRepository(ctx);
+            
+            var userDto = userRepository.GetUser(req.Body);
+            Console.WriteLine(userDto.ToString());
         }
         
         [HttpEndpoint("/", HttpMethod.Post)]

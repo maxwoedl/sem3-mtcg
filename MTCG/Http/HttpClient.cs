@@ -31,8 +31,12 @@ namespace MTCG.Http
                 });
 
             var method = methods.FirstOrDefault();
-            var obj = Activator.CreateInstance(method.DeclaringType);
-            method.Invoke(obj, new object[]{ request });
+            
+            if (method != null)
+            {
+                var obj = Activator.CreateInstance(method.DeclaringType);
+                method.Invoke(obj, new object[]{ request });
+            }
         }
 
         public HttpRequest ReadRequest()

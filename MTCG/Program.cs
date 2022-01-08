@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using MTCG.Http;
 using HttpStatusCode = MTCG.Http.HttpStatusCode;
 
@@ -12,6 +13,11 @@ namespace MTCG
     {
         static async Task Main(string[] args)
         {
+            // var config = new ConfigurationBuilder()
+            //     .SetBasePath(Directory.GetCurrentDirectory())
+            //     .AddJsonFile("appsettings.json", false, true)
+            //     .Build();
+            
             TcpListener listener = new TcpListener(IPAddress.Loopback, 8000);
             listener.Start(5);
 
@@ -19,28 +25,21 @@ namespace MTCG
 
             while (true)
             {
-                try
+                var socket = await listener.AcceptTcpClientAsync();
+                using var writer = new StreamWriter(socket.GetStream()) { AutoFlush = true };
+
+                using var reader = new StreamReader(socket.GetStream());
+                
+                HttpClient client = new HttpClient(reader);
+                client.Handle();
+
+                HttpResponse res = new HttpResponse
                 {
-                    var socket = await listener.AcceptTcpClientAsync();
-                    using var writer = new StreamWriter(socket.GetStream()) { AutoFlush = true };
+                    StatusCode = HttpStatusCode.Success,
+                    Body = "Hello World"
+                };
 
-                    using var reader = new StreamReader(socket.GetStream());
-                    
-                    HttpClient client = new HttpClient(reader);
-                    client.Handle();
-
-                    HttpResponse res = new HttpResponse
-                    {
-                        StatusCode = HttpStatusCode.Success,
-                        Body = "Hello World"
-                    };
-
-                    await writer.WriteLineAsync(res.ToString());
-                }
-                catch (Exception exc)
-                {
-                    Console.WriteLine("error occurred: " + exc.Message);
-                }
+                await writer.WriteLineAsync(res.ToString());
             }
         }
     }

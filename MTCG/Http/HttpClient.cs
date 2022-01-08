@@ -1,4 +1,6 @@
+using System;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace MTCG.Http
@@ -12,7 +14,28 @@ namespace MTCG.Http
             reader = streamReader;
         }
 
-        public HttpRequest Handle()
+        public void Handle()
+        {
+            HttpRequest request = ReadRequest();
+            
+            var methods = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(x => x.GetTypes())
+                .Where(x => x.IsClass)
+                .SelectMany(x => x.GetMethods())
+                .Where(x =>
+                {
+                    HttpEndpointAttribute attribute = (HttpEndpointAttribute) Attribute.GetCustomAttribute(x, typeof(HttpEndpointAttribute));
+
+                    return (attribute != null && attribute.Path.Equals(request.Path) &&
+                            attribute.Method.Equals(request.Method));
+                });
+
+            var method = methods.FirstOrDefault();
+            var obj = Activator.CreateInstance(method.DeclaringType);
+            method.Invoke(obj, new object[]{ request });
+        }
+
+        public HttpRequest ReadRequest()
         {
             int contentLength = 0;
             HttpRequest request = new HttpRequest();

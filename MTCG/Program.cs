@@ -27,7 +27,7 @@ namespace MTCG
                     using var reader = new StreamReader(socket.GetStream());
                     
                     HttpClient client = new HttpClient(reader);
-                    var req = client.Handle();
+                    client.Handle();
 
                     HttpResponse res = new HttpResponse
                     {

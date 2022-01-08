@@ -39,13 +39,18 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="BL\Business.cs" />
         <Compile Include="Http\HttpClient.cs" />
+        <Compile Include="Http\HttpEndpointAttribute.cs" />
         <Compile Include="Http\HttpMethod.cs" />
         <Compile Include="Http\HttpRequest.cs" />
         <Compile Include="Http\HttpResponse.cs" />
         <Compile Include="Http\HttpStatusCode.cs" />
         <Compile Include="Program.cs" />
         <Compile Include="Properties\AssemblyInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="DAL" />
     </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

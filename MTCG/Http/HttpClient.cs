@@ -1,5 +1,3 @@
-using System;
-using System.Data;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -24,7 +22,7 @@ namespace MTCG.Http
             {
                 line = reader.ReadLine();
                 
-                if (request.path == null)
+                if (request.Path == null)
                 {
                     var segments = line.Split(' ');
 
@@ -32,30 +30,30 @@ namespace MTCG.Http
                     {
                         case "GET":
                         {
-                            request.method = HttpMethod.Get;
+                            request.Method = HttpMethod.Get;
                             break;
                         }
 
                         case "POST":
                         {
-                            request.method = HttpMethod.Post;
+                            request.Method = HttpMethod.Post;
                             break;
                         }
 
                         case "PUT":
                         {
-                            request.method = HttpMethod.Put;
+                            request.Method = HttpMethod.Put;
                             break;
                         }
 
                         case "DELETE":
                         {
-                            request.method = HttpMethod.Delete;
+                            request.Method = HttpMethod.Delete;
                             break;
                         }
                     }
 
-                    request.path = !segments[1].EndsWith("/") ? segments[1] + "/" : segments[1];
+                    request.Path = !segments[1].EndsWith("/") ? segments[1] + "/" : segments[1];
                     continue;
                 }
 
@@ -70,11 +68,11 @@ namespace MTCG.Http
                         contentLength = int.Parse(value);
                     }
 
-                    request.headers.Add(match.Groups[1].Value, match.Groups[2].Value);
+                    request.Headers.Add(match.Groups[1].Value, match.Groups[2].Value);
                     continue;
                 }
                 
-                request.body = new string(ReadBulk(contentLength));
+                request.Body = new string(ReadBulk(contentLength));
                 break;
 
             } while (true);

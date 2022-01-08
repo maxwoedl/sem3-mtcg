@@ -4,17 +4,17 @@ namespace MTCG.Http
 {
     public class HttpRequest
     {
-        public HttpMethod method;
+        public HttpMethod Method;
         
-        public string path;
+        public string Path;
 
-        public string body;
+        public string Body;
 
-        public Dictionary<string, string> headers = new Dictionary<string, string>();
+        public Dictionary<string, string> Headers = new Dictionary<string, string>();
 
         public override string ToString()
         {
-            return $"Method: {method}\nPath: {path}\nBody: {body}";
+            return $"Method: {Method}\nPath: {Path}\nHeaders: {Headers}\nBody: {Body}";
         }
     }
 }

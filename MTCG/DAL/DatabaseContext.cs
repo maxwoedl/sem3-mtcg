@@ -4,34 +4,46 @@ using Microsoft.Extensions.Configuration;
 
 namespace MTCG.DAL
 {
-    public class DatabaseContext
+    public sealed class DatabaseContext
     {
+        private static DatabaseContext _instance; 
+        
         public NpgsqlConnection Connection { get; }
         
         public NpgsqlTransaction Transaction { get; private set; }
         
-        public DatabaseContext()
+        private DatabaseContext()
         {
             // string connectionString = configuration.GetConnectionString("Postgres");
             string connectionString = "Server=127.0.0.1;Port=5432;Database=mtcg;User Id=postgres;Password=W0oCWGm2";
             Connection = new NpgsqlConnection(connectionString);
         }
-
-        public async Task InitAsync()
+        
+        public static DatabaseContext GetInstance()
         {
-            await Connection.OpenAsync();
+            if (_instance == null)
+            {
+                _instance = new DatabaseContext();
+            }
+            return _instance;
+        }
+
+        public void Init()
+        {
+            Connection.Open();
             Transaction = Connection.BeginTransaction();
         }
         
-        public Task CommitAsync()
+        public void Commit()
         {
-            return Transaction.CommitAsync();
+            Transaction.Commit();
+            Transaction = Connection.BeginTransaction();
         }
 
-        public async ValueTask DisposeAsync()
+        public void Dispose()
         {
-            await Transaction.DisposeAsync();
-            await Connection.DisposeAsync();
+            Transaction.Dispose();
+            Connection.Dispose();
         }
     }
 }

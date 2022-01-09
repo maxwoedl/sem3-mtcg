@@ -8,7 +8,10 @@ namespace MTCG.Http
 
         public HttpStatusCode StatusCode { get; set; }
         public string Body { get; set; }
-        public Dictionary<string, string> Headers { get; } = new Dictionary<string, string>();
+        public Dictionary<string, string> Headers { get; } = new Dictionary<string, string>()
+        {
+            { "Content-Type", "application/json" }
+        };
 
         public override string ToString()
         {

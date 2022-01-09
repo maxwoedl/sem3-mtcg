@@ -1,17 +1,24 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
 namespace MTCG.Http
 {
-    public class HttpClient
+    public class HttpHandler
     {
-        private StreamReader reader;
+        private TcpClient socket;
+        
+        private readonly StreamReader _reader;
 
-        public HttpClient(StreamReader streamReader)
+        private readonly StreamWriter _writer;
+
+        public HttpHandler(TcpClient socket)
         {
-            reader = streamReader;
+            this.socket = socket;
+            _writer = new StreamWriter(socket.GetStream()) { AutoFlush = true };
+            _reader = new StreamReader(socket.GetStream());
         }
 
         public void Handle()
@@ -32,11 +39,23 @@ namespace MTCG.Http
 
             var method = methods.FirstOrDefault();
             
+            
             if (method != null)
             {
                 var obj = Activator.CreateInstance(method.DeclaringType);
-                method.Invoke(obj, new object[]{ request });
+                method.Invoke(obj, new object[]{ request, _writer });
+                socket.Close();
+                return;
             }
+            
+            var res = new HttpResponse
+            {
+                StatusCode = HttpStatusCode.NotFound
+            };
+                
+            _writer.WriteLine(res.ToString());
+            _writer.Flush();
+            socket.Close();
         }
 
         public HttpRequest ReadRequest()
@@ -47,7 +66,7 @@ namespace MTCG.Http
             string line;
             do
             {
-                line = reader.ReadLine();
+                line = _reader.ReadLine();
                 
                 if (request.Path == null)
                 {
@@ -113,7 +132,7 @@ namespace MTCG.Http
             int offset = 0;
             while (offset != bytes)
             {
-                int received = reader.ReadBlock(arr, offset, bytes - offset);
+                int received = _reader.ReadBlock(arr, offset, bytes - offset);
                 offset += received;
             }
             return arr;

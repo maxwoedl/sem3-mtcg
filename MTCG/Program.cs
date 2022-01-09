@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using MTCG.DAL;
 using MTCG.Http;
 using HttpStatusCode = MTCG.Http.HttpStatusCode;
 
@@ -18,28 +19,19 @@ namespace MTCG
             //     .AddJsonFile("appsettings.json", false, true)
             //     .Build();
             
-            TcpListener listener = new TcpListener(IPAddress.Loopback, 8000);
+            TcpListener listener = new TcpListener(IPAddress.Loopback, 10001);
             listener.Start(5);
 
             Console.CancelKeyPress += (sender, e) => Environment.Exit(0);
 
+            var dbContext = DatabaseContext.GetInstance();
+            dbContext.Init();
+            
             while (true)
             {
                 var socket = await listener.AcceptTcpClientAsync();
-                using var writer = new StreamWriter(socket.GetStream()) { AutoFlush = true };
-
-                using var reader = new StreamReader(socket.GetStream());
-                
-                HttpClient client = new HttpClient(reader);
-                client.Handle();
-
-                HttpResponse res = new HttpResponse
-                {
-                    StatusCode = HttpStatusCode.Success,
-                    Body = "Hello World"
-                };
-
-                await writer.WriteLineAsync(res.ToString());
+                HttpHandler handler = new HttpHandler(socket);
+                handler.Handle();
             }
         }
     }

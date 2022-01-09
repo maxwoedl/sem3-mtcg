@@ -80,6 +80,10 @@
           <Private>True</Private>
         </Reference>
         <Reference Include="mscorlib" />
+        <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed">
+          <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
         <Reference Include="Npgsql, Version=6.0.2.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7">
           <HintPath>..\packages\Npgsql.6.0.2\lib\netstandard2.0\Npgsql.dll</HintPath>
           <Private>True</Private>
@@ -156,11 +160,11 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Include="BL\Business.cs" />
+        <Compile Include="BL\UserService.cs" />
         <Compile Include="DAL\DatabaseContext.cs" />
         <Compile Include="DAL\UserDTO.cs" />
         <Compile Include="DAL\UserRepository.cs" />
-        <Compile Include="Http\HttpClient.cs" />
+        <Compile Include="Http\HttpHandler.cs" />
         <Compile Include="Http\HttpEndpointAttribute.cs" />
         <Compile Include="Http\HttpMethod.cs" />
         <Compile Include="Http\HttpRequest.cs" />

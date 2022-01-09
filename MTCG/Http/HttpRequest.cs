@@ -10,6 +10,8 @@ namespace MTCG.Http
 
         public string Body;
 
+        public string Authorization;
+
         public Dictionary<string, string> Headers = new Dictionary<string, string>();
 
         public override string ToString()

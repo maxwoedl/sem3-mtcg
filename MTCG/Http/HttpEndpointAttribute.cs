@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 
 namespace MTCG.Http
 {
@@ -12,6 +13,11 @@ namespace MTCG.Http
         {
             Path = path;
             Method = method;
+        }
+
+        public Regex GetRegex()
+        { 
+            return new Regex(Path);
         }
         
     }

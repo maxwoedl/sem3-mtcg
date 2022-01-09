@@ -24,7 +24,7 @@ namespace MTCG.Http
         public void Handle()
         {
             HttpRequest request = ReadRequest();
-            
+
             var methods = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(x => x.GetTypes())
                 .Where(x => x.IsClass)
@@ -32,13 +32,12 @@ namespace MTCG.Http
                 .Where(x =>
                 {
                     HttpEndpointAttribute attribute = (HttpEndpointAttribute) Attribute.GetCustomAttribute(x, typeof(HttpEndpointAttribute));
-
-                    return (attribute != null && attribute.Path.Equals(request.Path) &&
+                    
+                    return (attribute != null && attribute.GetRegex().IsMatch(request.Path) &&
                             attribute.Method.Equals(request.Method));
                 });
 
             var method = methods.FirstOrDefault();
-            
             
             if (method != null)
             {
@@ -112,6 +111,11 @@ namespace MTCG.Http
                     if (string.Compare(key, "content-length", true) == 0)
                     {
                         contentLength = int.Parse(value);
+                    }
+                    
+                    if (string.Compare(key, "Authorization", true) == 0)
+                    {
+                        request.Authorization = value.Split(' ')[1].Split('-')[0];
                     }
 
                     request.Headers.Add(match.Groups[1].Value, match.Groups[2].Value);

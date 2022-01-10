@@ -29,7 +29,7 @@ namespace MTCG.BL
                 return;
             }
 
-            var cards = _cardRepository.GetCards(req.Authorization);
+            var cards = _cardRepository.GetCards(req.Authorization, false);
             
             var response = new HttpResponse
             {

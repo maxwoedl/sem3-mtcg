@@ -26,9 +26,11 @@ namespace MTCG.DAL.Repositories
             return cmd.ExecuteNonQuery() == 1;
         }
 
-        public List<CardDTO> GetCards(string username)
+        public List<CardDTO> GetCards(string username, bool onlyInDeck)
         {
-            var cmd = new NpgsqlCommand("SELECT id, name, owner, cardtype, elementtype, damage, deck, shiny FROM cards WHERE owner=@owner", _ctx.Connection, _ctx.Transaction);
+            var query =
+                "SELECT id, name, owner, cardtype, elementtype, damage, deck, shiny FROM cards WHERE owner=@owner";
+            var cmd = new NpgsqlCommand(onlyInDeck ? $"{query} AND deck=true LIMIT 4" : query, _ctx.Connection, _ctx.Transaction);
             cmd.Parameters.AddWithValue("owner", username);
             
             var reader = cmd.ExecuteReader();
@@ -54,7 +56,7 @@ namespace MTCG.DAL.Repositories
             reader.Close();
             return cards;
         }
-
+        
         public bool ChangeCardOwner(Guid id, string username)
         {
             var cmd = new NpgsqlCommand("UPDATE cards SET owner=@owner WHERE id=@id", _ctx.Connection,

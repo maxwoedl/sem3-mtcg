@@ -92,6 +92,10 @@ namespace MTCG.BL
 
             return dmg;
         }
-        
+
+        public override string ToString()
+        {
+            return $"{Name} (Base: {Damage})";
+        }
     }
 }

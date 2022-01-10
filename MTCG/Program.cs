@@ -27,7 +27,6 @@ namespace MTCG
             
             while (true)
             {
-                Console.WriteLine("Waiting for new Connection...");
                 var socket = listener.AcceptTcpClient();
                 new Thread(HandleClient).Start(socket);
             }

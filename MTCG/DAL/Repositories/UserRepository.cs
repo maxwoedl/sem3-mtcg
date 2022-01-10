@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using Npgsql;
 
@@ -70,6 +71,45 @@ namespace MTCG.DAL.Repositories
             
             reader.Close();
             return userDto;
+        }
+
+        public List<ScoreDTO> GetScoreboard()
+        {
+            var cmd = new NpgsqlCommand("SELECT username, elo FROM users ORDER BY elo DESC", _ctx.Connection, _ctx.Transaction);
+
+            var scores = new List<ScoreDTO>();
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                scores.Add(new ScoreDTO
+                {
+                    Username = reader.GetString(0),
+                    Elo = reader.GetInt32(1),
+                });
+            }
+
+            reader.Close();
+            return scores;
+        }
+        
+        public ScoreDTO GetStats(string username)
+        {
+            var cmd = new NpgsqlCommand("SELECT username, elo FROM users WHERE username=@username", _ctx.Connection, _ctx.Transaction);
+            cmd.Parameters.AddWithValue("username", username);
+            
+            var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
+            var results = reader.Read();
+
+            if (!results) return null;
+            
+            var score = new ScoreDTO
+            {
+                Username = reader.GetString(0),
+                Elo = reader.GetInt32(1),
+            };
+            
+            reader.Close();
+            return score;
         }
     }
 }

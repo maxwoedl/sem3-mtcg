@@ -20,11 +20,11 @@ namespace MTCG.BL
         }
         
         [HttpEndpoint(@"^/cards/$", HttpMethod.Get)]
-        public void CreatePackage(HttpRequest req, StreamWriter writer)
+        public void GetCards(HttpRequest req, StreamWriter writer)
         {
             if (req.Authorization == null)
             {
-                writer.WriteLine(new HttpResponse{ StatusCode = HttpStatusCode.Forbidden }.ToString());
+                writer.WriteLine(new HttpResponse{ StatusCode = HttpStatusCode.Unauthorized }.ToString());
                 writer.Flush();
                 return;
             }

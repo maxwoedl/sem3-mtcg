@@ -1,9 +1,8 @@
 using System;
-using System.Collections.Generic;
 using System.Data;
 using Npgsql;
 
-namespace MTCG.DAL
+namespace MTCG.DAL.Repositories
 {
     public class UserRepository
     {
@@ -19,26 +18,22 @@ namespace MTCG.DAL
             var cmd = new NpgsqlCommand("INSERT INTO users VALUES(@username, @password) ON CONFLICT DO NOTHING", _ctx.Connection, _ctx.Transaction);
             cmd.Parameters.AddWithValue("username", username);
             cmd.Parameters.AddWithValue("password", password);
-            
-            var success = cmd.ExecuteNonQuery() == 1;
-            _ctx.Commit();
-            
-            return success;
+
+            return cmd.ExecuteNonQuery() == 1;
         }
         
         public bool UpdateUser(UserDTO userDto)
         {
-            var cmd = new NpgsqlCommand($"UPDATE users SET password=@password, name=@name, bio=@bio, image=@image WHERE username=@username", _ctx.Connection, _ctx.Transaction);
+            var cmd = new NpgsqlCommand($"UPDATE users SET password=@password, name=@name, bio=@bio, image=@image, coins=@coins, elo=@elo WHERE username=@username", _ctx.Connection, _ctx.Transaction);
             cmd.Parameters.AddWithValue("username", userDto.Username);
             cmd.Parameters.AddWithValue("password", userDto.Password);
             cmd.Parameters.AddWithValue("name", userDto.Name);
             cmd.Parameters.AddWithValue("bio", userDto.Bio);
             cmd.Parameters.AddWithValue("image", userDto.Image);
+            cmd.Parameters.AddWithValue("coins", userDto.Coins);
+            cmd.Parameters.AddWithValue("elo", userDto.Elo);
             
-            var success = cmd.ExecuteNonQuery() == 1;
-            _ctx.Commit();
-            
-            return success;
+            return cmd.ExecuteNonQuery() == 1;
         }
         
         public bool AuthenticateUser(string username, string password)
@@ -56,7 +51,7 @@ namespace MTCG.DAL
 
         public UserDTO GetUser(string username)
         {
-            var cmd = new NpgsqlCommand("SELECT * FROM users WHERE username=@username", _ctx.Connection, _ctx.Transaction);
+            var cmd = new NpgsqlCommand("SELECT username, password, name, bio, image, coins, elo FROM users WHERE username=@username", _ctx.Connection, _ctx.Transaction);
             cmd.Parameters.AddWithValue("username", username);
             
             var reader = cmd.ExecuteReader(CommandBehavior.SingleResult);
@@ -69,6 +64,8 @@ namespace MTCG.DAL
                 Name = reader.GetValue(2) != DBNull.Value ? reader.GetString(2) : null,
                 Bio = reader.GetValue(3) != DBNull.Value ? reader.GetString(3) : null,
                 Image = reader.GetValue(4) != DBNull.Value ? reader.GetString(4) : null,
+                Coins = reader.GetInt32(5),
+                Elo = reader.GetInt32(6),
             };
             
             reader.Close();

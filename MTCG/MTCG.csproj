@@ -160,10 +160,18 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="BL\CardService.cs" />
+        <Compile Include="BL\PackageService.cs" />
         <Compile Include="BL\UserService.cs" />
+        <Compile Include="DAL\CardDTO.cs" />
+        <Compile Include="DAL\CardType.cs" />
         <Compile Include="DAL\DatabaseContext.cs" />
+        <Compile Include="DAL\ElementType.cs" />
+        <Compile Include="DAL\PackageDTO.cs" />
+        <Compile Include="DAL\Repositories\CardRepository.cs" />
+        <Compile Include="DAL\Repositories\PackageRepository.cs" />
+        <Compile Include="DAL\Repositories\UserRepository.cs" />
         <Compile Include="DAL\UserDTO.cs" />
-        <Compile Include="DAL\UserRepository.cs" />
         <Compile Include="Http\HttpHandler.cs" />
         <Compile Include="Http\HttpEndpointAttribute.cs" />
         <Compile Include="Http\HttpMethod.cs" />

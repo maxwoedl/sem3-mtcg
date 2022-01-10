@@ -11,5 +11,9 @@ namespace MTCG.DAL
         public string Bio { get; set; }
         
         public string Image { get; set; }
+        
+        public int Coins { get; set; }
+        
+        public int Elo { get; set; }
     }
 }

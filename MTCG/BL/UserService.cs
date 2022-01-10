@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using MTCG.DAL;
+using MTCG.DAL.Repositories;
 using MTCG.Http;
 using Newtonsoft.Json.Linq;
 
@@ -9,10 +10,12 @@ namespace MTCG.BL
     public class UserService
     {
         private readonly UserRepository _repository;
+        private readonly DatabaseContext _ctx;
         
         public UserService()
         {
-            _repository = new UserRepository(DatabaseContext.GetInstance());
+            _ctx = DatabaseContext.GetInstance();
+            _repository = new UserRepository(_ctx);
         }
         
         [HttpEndpoint(@"^/users/$", HttpMethod.Post)]
@@ -21,6 +24,8 @@ namespace MTCG.BL
             var body = JObject.Parse(req.Body);
             
             var success = _repository.CreateUser((string) body["Username"], (string) body["Password"]);
+            _ctx.Commit();
+            
             var response = new HttpResponse
             {
                 StatusCode = success ? HttpStatusCode.Created : HttpStatusCode.BadRequest,
@@ -88,8 +93,11 @@ namespace MTCG.BL
             userDto.Name = body["Name"] == null ? userDto.Name : (string) body["Name"];
             userDto.Bio = body["Bio"] == null ? userDto.Bio : (string) body["Bio"];
             userDto.Image = body["Image"] == null ? userDto.Image : (string) body["Image"];
+            userDto.Coins = body["Coins"] == null ? userDto.Coins : Int32.Parse((string) body["Coins"]);
+            userDto.Elo = body["Elo"] == null ? userDto.Elo : Int32.Parse((string) body["Image"]);
             
             var success = _repository.UpdateUser(userDto);
+            _ctx.Commit();
             
             var response = new HttpResponse
             {

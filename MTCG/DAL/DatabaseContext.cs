@@ -1,5 +1,4 @@
 using Npgsql;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 
 namespace MTCG.DAL
@@ -15,7 +14,7 @@ namespace MTCG.DAL
         private DatabaseContext()
         {
             // string connectionString = configuration.GetConnectionString("Postgres");
-            string connectionString = "Server=127.0.0.1;Port=5432;Database=mtcg;User Id=postgres;Password=W0oCWGm2";
+            string connectionString = "Server=127.0.0.1;Port=5432;Database=mtcg;User Id=postgres;Password=postgres";
             Connection = new NpgsqlConnection(connectionString);
         }
         

@@ -160,6 +160,7 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup>
+        <Compile Include="BL\Card.cs" />
         <Compile Include="BL\CardService.cs" />
         <Compile Include="BL\PackageService.cs" />
         <Compile Include="BL\StatsService.cs" />

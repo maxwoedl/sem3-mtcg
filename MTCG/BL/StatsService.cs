@@ -1,6 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Threading;
 using MTCG.DAL;
 using MTCG.DAL.Repositories;
 using MTCG.Http;
@@ -50,6 +51,20 @@ namespace MTCG.BL
             {
                 StatusCode = HttpStatusCode.Success,
                 Body = JObject.FromObject(score).ToString(),
+            };
+            
+            writer.WriteLine(response.ToString());
+            writer.Flush();
+        }
+        
+        [HttpEndpoint(@"^/test/$", HttpMethod.Get)]
+        public void GetTest(HttpRequest req, StreamWriter writer)
+        {
+            Thread.Sleep(10000);
+            
+            var response = new HttpResponse
+            {
+                StatusCode = HttpStatusCode.Success,
             };
             
             writer.WriteLine(response.ToString());

@@ -1,18 +1,16 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
+using System.Threading;
 using Microsoft.Extensions.Configuration;
 using MTCG.DAL;
 using MTCG.Http;
-using HttpStatusCode = MTCG.Http.HttpStatusCode;
 
 namespace MTCG
 {
     internal class Program
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             // var config = new ConfigurationBuilder()
             //     .SetBasePath(Directory.GetCurrentDirectory())
@@ -29,10 +27,17 @@ namespace MTCG
             
             while (true)
             {
-                var socket = await listener.AcceptTcpClientAsync();
-                HttpHandler handler = new HttpHandler(socket);
-                handler.Handle();
+                Console.WriteLine("Waiting for new Connection...");
+                var socket = listener.AcceptTcpClient();
+                new Thread(HandleClient).Start(socket);
             }
+        }
+
+        private static void HandleClient(Object obj)
+        {
+            var socket = (TcpClient) obj;
+            HttpHandler handler = new HttpHandler(socket);
+            handler.Handle();
         }
     }
 }

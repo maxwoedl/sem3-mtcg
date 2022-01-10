@@ -57,15 +57,14 @@ namespace MTCG.Http
             socket.Close();
         }
 
-        public HttpRequest ReadRequest()
+        private HttpRequest ReadRequest()
         {
             int contentLength = 0;
             HttpRequest request = new HttpRequest();
-
-            string line;
+            
             do
             {
-                line = _reader.ReadLine();
+                string line = _reader.ReadLine();
                 
                 if (request.Path == null)
                 {

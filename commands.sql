@@ -5,6 +5,8 @@
 --DELETE FROM cards;
 --DELETE FROM users;
 
+--SELECT id, name, owner FROM cards WHERE owner IS NOT NULL ORDER BY owner;
+
 ------------------------------------------- 
 -- Select 4 cards for each players deck
 ------------------------------------------- 

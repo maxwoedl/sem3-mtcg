@@ -97,7 +97,20 @@ namespace MTCG.Http
                         }
                     }
 
-                    request.Path = !segments[1].EndsWith("/") ? segments[1] + "/" : segments[1];
+                    var pathSegments = segments[1].Split('?');
+
+                    request.Path = !pathSegments[0].EndsWith("/") ? $"{pathSegments[0]}/" : pathSegments[0];
+
+                    if (pathSegments.Length > 1)
+                    {
+                        var urlParams = pathSegments[1].Split('&');
+                        foreach (var param in urlParams)
+                        {
+                            var paramSegments = param.Split('=');
+                            request.Parameters.Add(paramSegments[0], paramSegments[1]);
+                        }
+                    }
+                    
                     continue;
                 }
 

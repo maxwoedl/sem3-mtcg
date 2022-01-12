@@ -39,6 +39,12 @@ namespace MTCG.DAL
             Transaction = Connection.BeginTransaction();
         }
 
+        public void Rollback()
+        {
+            Transaction.Rollback();
+            Transaction = Connection.BeginTransaction();
+        }
+
         public void Dispose()
         {
             Transaction.Dispose();
